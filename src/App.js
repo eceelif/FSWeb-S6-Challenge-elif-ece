@@ -55,8 +55,8 @@ const App = () => {
       <h1 className="Header">Gezegenler</h1>
       { 
   Planets.results &&
-  Planets.results.map((Planets, index) => (
-    <PlanetsComponent key={index} PlanetsData={Planets} />
+  Planets.results.map((planets, index) => (
+    <PlanetsComponent key={index} PlanetsData={planets} />
   )) }
 </div>
 );

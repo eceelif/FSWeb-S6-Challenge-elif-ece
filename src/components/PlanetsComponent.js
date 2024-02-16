@@ -1,15 +1,8 @@
-
-
 import React from "react";
-const PlanetsComponent = ({ PlanetsData }) => {
-  console.log('PlanetsData:', PlanetsData);
 
-  // PlanetsData'nın varlığını ve results dizisinin varlığını kontrol et
-  if (!PlanetsData || !PlanetsData.results || PlanetsData.results.length === 0) {
-    return <div>No data available</div>; // veya istediğiniz bir hata mesajı
-  }
-
-  const planet = PlanetsData.results[0];
+const PlanetsComponent = (props) => {
+  const { PlanetsData } = props;
+  
   const {
     name,
     rotation_period,
@@ -22,7 +15,9 @@ const PlanetsComponent = ({ PlanetsData }) => {
     population,
     residents,
     films
-  } = planet;
+  } = PlanetsData;
+
+  return (
     <div className="container">
       <div className="Name"> {name} </div>
       <div className="Rotation_Period"> {rotation_period}</div>
@@ -56,7 +51,7 @@ const PlanetsComponent = ({ PlanetsData }) => {
         </ul>
       </div>
     </div>
-  
+  );
 };
 
 export default PlanetsComponent;
