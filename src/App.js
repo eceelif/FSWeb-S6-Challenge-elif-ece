@@ -1,64 +1,108 @@
 import React, { useState, useEffect } from "react";
-//import CharacterComponent from "./components/CharacterComponent.js";
-import CharacterObj from "./fetchData.js";
+import CharacterComponent from "./components/CharacterComponent.js";
 import PlanetsComponent from "./components/PlanetsComponent.js";
+import CharacterObj from "./fetchData.js";
+import FilmsComponent from "./components/FilmsComponent.js";
+
+const AccordionItem = ({ title, data, renderItem }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleAccordion = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <div className="accordion-item">
+      <div className="accordion-header" onClick={toggleAccordion}>
+        <h2>{title}</h2>
+      </div>
+      {isOpen && (
+        <div className="accordion-content">
+          {data.results &&
+            data.results.map((item, index) => (
+              <div key={index}>{renderItem(item)}</div>
+            ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const App = () => {
+  const [Characters, setCharacters] = useState({});
   const [Planets, setPlanets] = useState({});
-  let [pageNo, setPageNo] = useState(1); //?
+  const [Films, setFilms] = useState({});
+  let [pageNo, setPageNo] = useState(1);
 
-  // Try to think through what state you'll need for this app before starting. Then build out
-  // the state properties here.
   useEffect(() => {
-
-    
-    const fetchDataAndSetPlanets = async () => {
+    const fetchDataAndSetCharacters = async () => {
       try {
-        console.log(pageNo);
-        const data = await CharacterObj.GetPlanets(pageNo);
-        console.log("App de verileri", data);
-
-        setPlanets(data);
-        console.log("App de verileri 2", data);
+        const data = await CharacterObj.GetPeople(pageNo);
+        setCharacters(data);
       } catch (error) {
-        console.log("Error fetching data:", error);
+        console.log("Error fetching character data:", error);
       }
     };
 
+    const fetchDataAndSetPlanets = async () => {
+      try {
+        const data = await CharacterObj.GetPlanets(pageNo);
+        setPlanets(data);
+      } catch (error) {
+        console.log("Error fetching planet data:", error);
+      }
+    };
+    const fetchDataAndSetFilms = async () => {
+      try {
+        const data = await CharacterObj.GetFilms(pageNo);
+        setFilms(data);
+      } catch (error) {
+        console.log("Error fetching films data:", error);
+      }
+    };
+
+    fetchDataAndSetCharacters();
     fetchDataAndSetPlanets();
+    fetchDataAndSetFilms();
   }, [pageNo]);
 
- const next= ()=>{
-    let tmp_pageNo=pageNo +1;
-    setPageNo(tmp_pageNo);
-    console.log(pageNo);
-  }
- const prev= ()=>{
-  let tmp_pageNo=pageNo -1;
-    setPageNo(tmp_pageNo);
-    console.log(pageNo);
-  }
-  // Fetch characters from the API in an effect hook. Remember, anytime you have a
-  // side effect in a component, you want to think about which state and/or props it should
-  // sync up with, if any.  
-  //console.log(Characters);
+  const next = () => {
+    setPageNo(pageNo + 1);
+  };
+
+  const prev = () => {
+    setPageNo(pageNo - 1);
+  };
+
   return (
     <div className="App">
-      {Planets.previous &&
-        <button onClick={prev}>PREVIOUS</button>
-      }
-      
-      {Planets.next &&
-        <button onClick={next} >NEXT</button>
-      }
-    
-      <h1 className="Header">Gezegenler</h1>
-      { 
-  Planets.results &&
-  Planets.results.map((planets, index) => (
-    <PlanetsComponent key={index} PlanetsData={planets} />
-  )) }
-</div>
-);
+      {Characters.previous && <button onClick={prev}>PREVIOUS</button>}
+      {Characters.next && <button onClick={next}>NEXT</button>}
+
+      <AccordionItem
+        title="Karakterler"
+        data={Characters}
+        renderItem={(character) => (
+          <CharacterComponent key={character.name} CharacterData={character} />
+        )}
+      />
+
+      <AccordionItem
+        title="Gezegenler"
+        data={Planets}
+        renderItem={(planet) => (
+          <PlanetsComponent key={planet.name} PlanetsData={planet} />
+        )}
+      />
+      <AccordionItem
+        title="Filmler"
+        data={Films}
+        renderItem={(film) => (
+          <FilmsComponent key={film.title} FilmsData={film} />
+        )}
+      />
+    </div>
+  );
 };
+
 export default App;
