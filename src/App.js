@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import CharacterComponent from "./components/CharacterComponent.js";
+//import CharacterComponent from "./components/CharacterComponent.js";
 import CharacterObj from "./fetchData.js";
+import PlanetsComponent from "./components/PlanetsComponent.js";
 
 const App = () => {
-  const [Characters, setCharacters] = useState({});
+  const [Planets, setPlanets] = useState({});
   let [pageNo, setPageNo] = useState(1); //?
 
   // Try to think through what state you'll need for this app before starting. Then build out
@@ -11,25 +12,20 @@ const App = () => {
   useEffect(() => {
 
     
-    const fetchDataAndSetCharacters = async () => {
+    const fetchDataAndSetPlanets = async () => {
       try {
         console.log(pageNo);
-        const data = await CharacterObj.GetPeople(pageNo);
-        console.log(data);
-/*  
-        "count": 82,
-        "next": "https://swapi.dev/api/people/?page=2",
-        "previous": null,
-        "results": []
-*/
-        setCharacters(data);
-       // console.log(data);
+        const data = await CharacterObj.GetPlanets(pageNo);
+        console.log("App de verileri", data);
+
+        setPlanets(data);
+        console.log("App de verileri 2", data);
       } catch (error) {
         console.log("Error fetching data:", error);
       }
     };
 
-    fetchDataAndSetCharacters();
+    fetchDataAndSetPlanets();
   }, [pageNo]);
 
  const next= ()=>{
@@ -48,21 +44,21 @@ const App = () => {
   //console.log(Characters);
   return (
     <div className="App">
-      {Characters.previous &&
+      {Planets.previous &&
         <button onClick={prev}>PREVIOUS</button>
       }
       
-      {Characters.next &&
+      {Planets.next &&
         <button onClick={next} >NEXT</button>
       }
     
-      <h1 className="Header">Karakterler</h1>
+      <h1 className="Header">Gezegenler</h1>
       { 
-      Characters.results &&
-      Characters.results.map((characters, index) => (
-        <CharacterComponent key={index} CharacterData={characters} />
-      )) }
-    </div>
-  );
+  Planets.results &&
+  Planets.results.map((Planets, index) => (
+    <PlanetsComponent key={index} PlanetsData={Planets} />
+  )) }
+</div>
+);
 };
 export default App;

@@ -1,20 +1,26 @@
-const getRequest = async (url)=>{
+const getRequest = async (url) => {
     var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-      };
-      
-    let result = {}; 
+      method: 'GET',
+      redirect: 'follow'
+    };
+  
+    let result = {};
+  
     try {
-        result = await fetch(url, requestOptions).then(response => response.json())
+      const response = await fetch(url, requestOptions);
+      
+      if (!response.ok) {
+        throw new Error(`Fetch error: ${response.status} - ${response.statusText}`);
       }
-      catch(err) {
-        console.log(`err (url: "${url}") ,`, err);
-        result = {};
-      }
-
+  
+      result = await response.json();
+    } catch (err) {
+      console.log(`Error fetching data from "${url}":`, err);
+      result = {};
+    }
+  
     return result;
-}
+  };
 
 const CharacterObj = {
     GetPeople: async (pageNo = 1) => {
