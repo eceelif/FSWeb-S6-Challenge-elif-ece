@@ -1,23 +1,21 @@
-// CharacterComponent.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import CharacterObj  from "./fetchData";
-
+import CharacterObj from "./fetchData";
 
 const CharacterComponent = () => {
   const [characterData, setCharacterData] = useState({});
-  const { name: characterName } = useParams();
+  const { characterName } = useParams(); // Updated to use characterName directly
+
+  const fetchData = async () => {
+    try {
+      const data = await CharacterObj.GetCharacterByName(characterName);
+      setCharacterData(data.results[0]); // Assuming the first character is unique
+    } catch (error) {
+      console.error("Error fetching character data:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await CharacterObj.GetCharacterByName(characterName);
-        setCharacterData(data.results[0]); // Assuming the first character is unique
-      } catch (error) {
-        console.error("Error fetching character data:", error);
-      }
-    };
-
     fetchData();
   }, [characterName]);
 
@@ -29,8 +27,8 @@ const CharacterComponent = () => {
 
   return (
     <div className="container">
-      {/* ... (other HTML content) */}
-      <div className="Name"> {name} </div>
+      <h1>Deneme Başlığı</h1>
+      <div className="Name">{name}</div>
       {/* ... (other character properties) */}
     </div>
   );
